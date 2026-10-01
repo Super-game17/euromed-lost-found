@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Mes déclarations{% endblock %}
+
+{% block content %}
+
+<section class="items-page">
+
+    <h1>Mes déclarations</h1>
+
+    <!-- Boutons pour créer une nouvelle déclaration -->
+    <div class="actions">
+
+        <a href="{{ url_for('items.declare_lost') }}"
+           class="btn btn-primary">
+            Déclarer un objet perdu
+        </a>
+
+        <a href="{{ url_for('items.declare_found') }}"
+           class="btn btn-success">
+            Déclarer un objet trouvé
+        </a>
+
+    </div>
+
+    <!-- Liste des déclarations de l'utilisateur -->
+    {% if items %}
+
+        <table class="items-table">
+
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Titre</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                    <tr>
+
+                        <td>
+                            {% if item.item_type == 'lost' %}
+                                Perdu
+                            {% else %}
+                                Trouvé
+                            {% endif %}
+                        </td>
+
+                        <td>{{ item.title }}</td>
+
+                        <td>
+                            {{ item.date_event.strftime('%d/%m/%Y') }}
+                        </td>
+
+                        <td>
+                            {% if item.status == 'open' %}
+                                Ouvert
+                            {% elif item.status == 'in_progress' %}
+                                En cours
+                            {% elif item.status == 'returned' %}
+                                Restitué
+                            {% else %}
+                                {{ item.status }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('items.item_detail', item_id=item.id) }}"
+                               class="btn btn-primary">
+                                Voir
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>Vous n'avez encore rien déclaré.</p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
