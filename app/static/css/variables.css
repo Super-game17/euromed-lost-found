@@ -1,0 +1,47 @@
+:root {
+    /* =========================
+       UEMF COLORS
+       ========================= */
+
+    --primary-color: #005B96;
+    --primary-dark: #123B5D;
+    --primary-light: #EAF4FA;
+
+    --secondary-color: #72BE44;
+    --secondary-light: #EEF8E8;
+
+    /* =========================
+       NEUTRAL COLORS
+       ========================= */
+
+    --white: #FFFFFF;
+    --background-color: #F5F7F8;
+
+    --text-color: #1F2933;
+    --text-light: #5F6B73;
+
+    --border-color: #E1E7EB;
+
+    /* =========================
+       STATUS COLORS
+       ========================= */
+
+    --success-color: #72BE44;
+    --warning-color: #F4B942;
+    --danger-color: #D9534F;
+
+    /* =========================
+       DESIGN
+       ========================= */
+
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+    --container-width: 1200px;
+
+    --transition: 0.2s ease;
+}

@@ -1,0 +1,147 @@
+/* =========================
+   NAVBAR
+   ========================= */
+
+.navbar {
+    background-color: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    width: 90%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+
+    min-height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* =========================
+   LOGO
+   ========================= */
+
+.uemf-logo {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-text {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 18px;
+}
+/* =========================
+   NAVIGATION
+   ========================= */
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    font-size: 15px;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 22px;
+
+    border-radius: var(--border-radius-sm);
+
+    font-weight: 600;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-light);
+}
+
+/* =========================
+   CARDS
+   ========================= */
+
+.card {
+    background-color: var(--white);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: var(--border-radius-md);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+.footer {
+    background-color: var(--primary-dark);
+    color: var(--white);
+    padding: 40px 0;
+}
