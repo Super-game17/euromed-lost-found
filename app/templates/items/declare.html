@@ -1,35 +1,71 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>{{ titre_page }}</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block content %}
+<section class="form-page">
     <h1>{{ titre_page }}</h1>
 
-    <form method="post">
-      <label for="title">Titre</label><br />
-      <input id="title" name="title" type="text" required /><br /><br />
+    <form method="POST" enctype="multipart/form-data" class="item-form">
 
-      <label for="description">Description</label><br />
-      <textarea id="description" name="description" rows="5" required></textarea><br /><br />
+        <div class="form-group">
+            <label for="title">Titre</label>
+            <input type="text" id="title" name="title" maxlength="120" required
+                   value="{{ form.get('title', item.title if item else '') }}"
+                   placeholder="Ex : Clés avec porte-clés bleu">
+        </div>
 
-      <label for="category">Catégorie</label><br />
-      <select id="category" name="category" required>
-        <option value="Électronique">Électronique</option>
-        <option value="Documents">Documents</option>
-        <option value="Clés">Clés</option>
-        <option value="Bagagerie">Bagagerie</option>
-        <option value="Autre">Autre</option>
-      </select><br /><br />
+        <div class="form-group">
+            <label for="category">Catégorie</label>
+            {% set cur = form.get('category', item.category if item else '') %}
+            <select id="category" name="category" required>
+                <option value="">-- Choisir une catégorie --</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == cur %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-      <label for="location">Lieu</label><br />
-      <input id="location" name="location" type="text" required /><br /><br />
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4" required
+                      placeholder="Couleur, marque, signes distinctifs...">{{ form.get('description', item.description if item else '') }}</textarea>
+        </div>
 
-      <label for="date_event">Date</label><br />
-      <input id="date_event" name="date_event" type="date" required /><br /><br />
+        <div class="form-group">
+            <label for="date_event">
+                {% if item_type == "lost" %}Date de la perte{% else %}Date de la découverte{% endif %}
+            </label>
+            <input type="date" id="date_event" name="date_event" required
+                   value="{{ form.get('date_event', item.date_event.isoformat() if item else '') }}">
+        </div>
 
-      <button type="submit">Déclarer</button>
+        <div class="form-group">
+            <label for="location">Lieu</label>
+            {% set curl = form.get('location', item.location if item else '') %}
+            <select id="location" name="location" required>
+                <option value="">-- Choisir un lieu --</option>
+                {% for location in locations %}
+                    <option value="{{ location }}" {% if location == curl %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="photo">Photo (facultatif, 5 Mo max)</label>
+            <input type="file" id="photo" name="photo" accept="image/png,image/jpeg,image/webp">
+            {% if item and item.photo_filename %}
+                <p>Photo actuelle :</p>
+                <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+                     alt="Photo actuelle" style="max-width:150px;border-radius:8px;">
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {% if item %}Enregistrer les modifications
+            {% elif item_type == "lost" %}Déclarer l'objet perdu
+            {% else %}Déclarer l'objet trouvé{% endif %}
+        </button>
     </form>
-  </body>
-</html>
+</section>
+{% endblock %}
