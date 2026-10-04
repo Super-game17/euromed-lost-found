@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Déclarer un objet trouvé{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <h1>Déclarer un objet trouvé</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="item-form">
+
+        <div class="form-group">
+            <label for="title">Titre</label>
+            <input type="text" id="title" name="title" maxlength="120" required
+                   value="{{ form.get('title', item.title if item else '') }}"
+                   placeholder="Ex : Téléphone noir trouvé à la bibliothèque">
+        </div>
+
+        <div class="form-group">
+            <label for="category">Catégorie</label>
+            {% set cur = form.get('category', item.category if item else '') %}
+            <select id="category" name="category" required>
+                <option value="">-- Choisir une catégorie --</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == cur %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4" required
+                      placeholder="Couleur, marque, état... (ne révélez pas tous les détails : le propriétaire devra les confirmer)">{{ form.get('description', item.description if item else '') }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="date_event">Date de la découverte</label>
+            <input type="date" id="date_event" name="date_event" required
+                   value="{{ form.get('date_event', item.date_event.isoformat() if item else '') }}">
+        </div>
+
+        <div class="form-group">
+            <label for="location">Lieu de la découverte</label>
+            {% set curl = form.get('location', item.location if item else '') %}
+            <select id="location" name="location" required>
+                <option value="">-- Choisir un lieu --</option>
+                {% for location in locations %}
+                    <option value="{{ location }}" {% if location == curl %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="photo">Photo (facultatif, 5 Mo max)</label>
+            <input type="file" id="photo" name="photo" accept="image/png,image/jpeg,image/webp">
+            {% if item and item.photo_filename %}
+                <p>Photo actuelle :</p>
+                <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+                     alt="Photo actuelle" style="max-width:150px;border-radius:8px;">
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-success">Déclarer l'objet trouvé</button>
+    </form>
+</section>
+{% endblock %}
