@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Objets perdus{% endblock %}
+
+{% block content %}
+<section class="items-page">
+    <h1>Objets perdus</h1>
+
+    <div class="actions">
+        <a href="{{ url_for('items.declare_lost') }}" class="btn btn-primary">Déclarer un objet perdu</a>
+        <a href="{{ url_for('items.list_items') }}" class="btn btn-success">Voir tous les objets</a>
+    </div>
+
+    {% if items %}
+        <div class="items-grid">
+            {% for item in items if item.item_type == 'lost' %}
+                <article class="item-card">
+                    {% if item.photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+                             alt="{{ item.title }}">
+                    {% endif %}
+                    <span class="badge badge-blue">Perdu</span>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.category }} · {{ item.location }}</p>
+                    <p>{{ item.date_event.strftime('%d/%m/%Y') }}</p>
+                    <a href="{{ url_for('items.item_detail', item_id=item.id) }}" class="btn btn-primary">Voir le détail</a>
+                </article>
+            {% else %}
+                <p>Aucun objet perdu pour le moment.</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun objet perdu pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock %}
