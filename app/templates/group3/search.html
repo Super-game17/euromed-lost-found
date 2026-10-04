@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+<<<<<<< HEAD
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,33 @@
         <form method="GET" action="{{ url_for('group3_search.search') }}" class="search-form">
             <div class="form-group">
                 <label for="keyword">Mot-clé</label>
+=======
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recherche - Euromed Lost & Found</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/group3_search.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h1>Euromed Lost & Found</h1>
+    </header>
+
+    <main class="container">
+
+        <h2>Rechercher un objet</h2>
+
+        <form method="GET" action="{{ url_for('group3_search.search') }}" class="search-form">
+
+            <div class="form-group">
+                <label for="keyword">Mot-clé</label>
+
+>>>>>>> upstream/chaimae
                 <input
                     type="text"
                     id="keyword"
@@ -23,34 +51,71 @@
                     value="{{ keyword }}"
                 >
             </div>
+<<<<<<< HEAD
             <div class="form-group">
                 <label for="category">Catégorie</label>
                 <select id="category" name="category">
                     <option value="">Toutes les catégories</option>
+=======
+
+            <div class="form-group">
+                <label for="category">Catégorie</label>
+
+                <select id="category" name="category">
+
+                    <option value="">Toutes les catégories</option>
+
+>>>>>>> upstream/chaimae
                     <option value="Document"
                         {% if category == "Document" %}selected{% endif %}>
                         Document
                     </option>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                     <option value="Téléphone"
                         {% if category == "Téléphone" %}selected{% endif %}>
                         Téléphone
                     </option>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                     <option value="Clés"
                         {% if category == "Clés" %}selected{% endif %}>
                         Clés
                     </option>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                     <option value="Sac"
                         {% if category == "Sac" %}selected{% endif %}>
                         Sac
                     </option>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                     <option value="Autre"
                         {% if category == "Autre" %}selected{% endif %}>
                         Autre
                     </option>
+<<<<<<< HEAD
                 </select>
             </div>
             <div class="form-group">
                 <label for="location">Lieu</label>
+=======
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Lieu</label>
+
+>>>>>>> upstream/chaimae
                 <input
                     type="text"
                     id="location"
@@ -59,8 +124,15 @@
                     value="{{ location }}"
                 >
             </div>
+<<<<<<< HEAD
             <div class="form-group">
                 <label for="date">Date</label>
+=======
+
+            <div class="form-group">
+                <label for="date">Date</label>
+
+>>>>>>> upstream/chaimae
                 <input
                     type="date"
                     id="date"
@@ -68,18 +140,34 @@
                     value="{{ date }}"
                 >
             </div>
+<<<<<<< HEAD
             <div class="form-group">
                 <label for="type">Type</label>
                 <select id="type" name="type">
                     <option value="">Tous</option>
+=======
+
+            <div class="form-group">
+                <label for="type">Type</label>
+
+                <select id="type" name="type">
+
+                    <option value="">Tous</option>
+
+>>>>>>> upstream/chaimae
                     <option value="perdu"
                         {% if object_type == "perdu" %}selected{% endif %}>
                         Objets perdus
                     </option>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                     <option value="trouvé"
                         {% if object_type == "trouvé" %}selected{% endif %}>
                         Objets trouvés
                     </option>
+<<<<<<< HEAD
                 </select>
             </div>
             <div class="buttons">
@@ -92,10 +180,33 @@
             </div>
         </form>
         <section class="results">
+=======
+
+                </select>
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit">
+                    Rechercher
+                </button>
+
+                <a href="{{ url_for('group3_search.search') }}">
+                    Réinitialiser
+                </a>
+
+            </div>
+
+        </form>
+
+        <section class="results">
+
+>>>>>>> upstream/chaimae
             <h2>
                 Résultats
                 <span>({{ results|length }})</span>
             </h2>
+<<<<<<< HEAD
             {% if results %}
                 <div class="results-grid">
                     {% for obj in results %}
@@ -104,18 +215,44 @@
                                 {{ obj.type|capitalize }}
                             </span>
                             <h3>{{ obj.titre }}</h3>
+=======
+
+            {% if results %}
+
+                <div class="results-grid">
+
+                    {% for obj in results %}
+
+                        <article class="object-card">
+
+                            <span class="object-type">
+                                {{ obj.type|capitalize }}
+                            </span>
+
+                            <h3>{{ obj.titre }}</h3>
+
+>>>>>>> upstream/chaimae
                             <p>
                                 <strong>Catégorie :</strong>
                                 {{ obj.categorie }}
                             </p>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                             <p>
                                 <strong>Lieu :</strong>
                                 {{ obj.lieu }}
                             </p>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/chaimae
                             <p>
                                 <strong>Date :</strong>
                                 {{ obj.date }}
                             </p>
+<<<<<<< HEAD
                             <p>
                                 {{ obj.description }}
                             </p>
@@ -132,5 +269,34 @@
             {% endif %}
         </section>
     </main>
+=======
+
+                            <p>
+                                {{ obj.description }}
+                            </p>
+
+                            <a href="#">
+                                Voir les détails
+                            </a>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="no-results">
+                    <p>Aucun objet ne correspond à votre recherche.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+>>>>>>> upstream/chaimae
 </body>
 </html>

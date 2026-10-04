@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Objets perdus et trouvés{% endblock %}
+
+{% block content %}
+
+<section class="items-page">
+
+    <h1>Objets perdus et trouvés</h1>
+
+    <!-- Filtres -->
+    <form method="GET" class="filters">
+
+        <select name="type">
+            <option value="">Tous les types</option>
+
+            <option value="lost"
+                {% if selected_type == 'lost' %}selected{% endif %}>
+                Perdus
+            </option>
+
+            <option value="found"
+                {% if selected_type == 'found' %}selected{% endif %}>
+                Trouvés
+            </option>
+        </select>
+
+        <select name="category">
+
+            <option value="">Toutes les catégories</option>
+
+            {% for category in categories %}
+                <option value="{{ category }}"
+                    {% if category == selected_category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            Filtrer
+        </button>
+
+    </form>
+
+
+    <!-- Liste des objets -->
+    {% if items %}
+
+        <div class="items-grid">
+
+            {% for item in items %}
+
+                <article class="item-card">
+
+                    {% if item.photo_filename %}
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+                            alt="{{ item.title }}"
+                        >
+                    {% endif %}
+
+
+                    <!-- Bleu = perdu / Vert = trouvé -->
+                    <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
+
+                        {% if item.item_type == 'lost' %}
+                            Perdu
+                        {% else %}
+                            Trouvé
+                        {% endif %}
+
+                    </span>
+
+
+                    <h3>{{ item.title }}</h3>
+
+                    <p>
+                        {{ item.category }} · {{ item.location }}
+                    </p>
+
+                    <p>
+                        {{ item.date_event.strftime('%d/%m/%Y') }}
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('items.item_detail', item_id=item.id) }}"
+                        class="btn btn-primary">
+                        Voir le détail
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <p>Aucun objet ne correspond à votre recherche.</p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
