@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mes réclamations</title>
+  </head>
+  <body>
+    <h1>Mes réclamations</h1>
+
+    {% if claims %}
+      <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Objet</th>
+            <th>Preuve</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for claim in claims %}
+            <tr>
+              <td>{{ claim.item.title }}</td>
+              <td>{{ claim.proof_description[:80] }}</td>
+              <td>{{ claim.status }}</td>
+              <td>
+                <a href="{{ url_for('matching.manage_claim', claim_id=claim.id) }}">Gérer</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Vous n’avez encore aucune réclamation.</p>
+    {% endif %}
+  </body>
+</html>

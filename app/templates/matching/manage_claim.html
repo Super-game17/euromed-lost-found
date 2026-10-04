@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestion de réclamation</title>
+  </head>
+  <body>
+    <h1>Gestion de réclamation</h1>
+
+    <p><strong>Objet :</strong> {{ claim.item.title }}</p>
+    <p><strong>Demandeur :</strong> {{ claim.claimer.first_name }} {{ claim.claimer.last_name }}</p>
+    <p><strong>Preuve :</strong> {{ claim.proof_description }}</p>
+    <p><strong>Statut actuel :</strong> {{ claim.status }}</p>
+
+    <form method="post">
+      <label for="action">Action :</label>
+      <select id="action" name="action">
+        <option value="validate">Valider</option>
+        <option value="reject">Refuser</option>
+        <option value="restitute">Marquer comme restitué</option>
+      </select>
+      <button type="submit">Appliquer</button>
+    </form>
+
+    <p><a href="{{ url_for('matching.my_claims') }}">Retour à mes réclamations</a></p>
+  </body>
+</html>
