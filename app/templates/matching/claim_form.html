@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Réclamation</title>
+  </head>
+  <body>
+    <h1>Réclamer un objet trouvé</h1>
+
+    <p><strong>Objet concerné :</strong> {{ item.title }}</p>
+    <p><strong>Catégorie :</strong> {{ item.category }}</p>
+    <p><strong>Lieu :</strong> {{ item.location }}</p>
+
+    {% if error %}
+      <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+      <label for="proof_description">Détails de preuve / description du bien :</label><br />
+      <textarea id="proof_description" name="proof_description" rows="6" cols="60" required></textarea><br /><br />
+
+      <button type="submit">Envoyer la réclamation</button>
+    </form>
+
+    <p><a href="{{ url_for('matching.matches_for_item', item_id=item.id) }}">Retour aux correspondances</a></p>
+  </body>
+</html>
