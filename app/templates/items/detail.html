@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block content %}
+
+<section class="detail-page">
+
+    <!-- Type de l'objet -->
+    <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
+        {% if item.item_type == 'lost' %}
+            Objet perdu
+        {% else %}
+            Objet trouvé
+        {% endif %}
+    </span>
+
+    <h1>{{ item.title }}</h1>
+
+    <!-- Photo -->
+    {% if item.photo_filename %}
+        <img
+            src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+            alt="{{ item.title }}"
+            class="detail-photo"
+        >
+    {% endif %}
+
+    <!-- Informations -->
+    <ul class="detail-info">
+
+        <li>
+            <strong>Catégorie :</strong>
+            {{ item.category }}
+        </li>
+
+        <li>
+            <strong>Lieu :</strong>
+            {{ item.location }}
+        </li>
+
+        <li>
+            <strong>Date :</strong>
+            {{ item.date_event.strftime('%d/%m/%Y') }}
+        </li>
+
+        <li>
+            <strong>Statut :</strong>
+
+            {% if item.status == 'open' %}
+                Ouvert
+            {% elif item.status == 'in_progress' %}
+                Réclamation en cours
+            {% elif item.status == 'returned' %}
+                Restitué
+            {% else %}
+                {{ item.status }}
+            {% endif %}
+
+        </li>
+
+    </ul>
+
+    <!-- Description -->
+    <p>{{ item.description }}</p>
+
+    <!-- Actions -->
+    <div class="actions">
+
+        {% if is_owner and item.status == 'open' %}
+
+            <a
+                href="{{ url_for('items.edit_item', item_id=item.id) }}"
+                class="btn btn-primary">
+                Modifier
+            </a>
+
+            <form
+                method="POST"
+                action="{{ url_for('items.delete_item', item_id=item.id) }}"
+                style="display:inline;"
+                onsubmit="return confirm('Supprimer cette déclaration ?');">
+
+                <button type="submit" class="btn btn-danger">
+                    Supprimer
+                </button>
+
+            </form>
+
+        {% endif %}
+
+        <a
+            href="{{ url_for('items.list_items') }}"
+            class="btn btn-success">
+            Retour à la liste
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
