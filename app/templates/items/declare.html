@@ -3,69 +3,235 @@
 {% block title %}{{ titre_page }}{% endblock %}
 
 {% block content %}
-<section class="form-page">
-    <h1>{{ titre_page }}</h1>
-
-    <form method="POST" enctype="multipart/form-data" class="item-form">
-
-        <div class="form-group">
-            <label for="title">Titre</label>
-            <input type="text" id="title" name="title" maxlength="120" required
-                   value="{{ form.get('title', item.title if item else '') }}"
-                   placeholder="Ex : Clés avec porte-clés bleu">
-        </div>
-
-        <div class="form-group">
-            <label for="category">Catégorie</label>
-            {% set cur = form.get('category', item.category if item else '') %}
-            <select id="category" name="category" required>
-                <option value="">-- Choisir une catégorie --</option>
-                {% for category in categories %}
-                    <option value="{{ category }}" {% if category == cur %}selected{% endif %}>{{ category }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="4" required
-                      placeholder="Couleur, marque, signes distinctifs...">{{ form.get('description', item.description if item else '') }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="date_event">
-                {% if item_type == "lost" %}Date de la perte{% else %}Date de la découverte{% endif %}
-            </label>
-            <input type="date" id="date_event" name="date_event" required
-                   value="{{ form.get('date_event', item.date_event.isoformat() if item else '') }}">
-        </div>
-
-        <div class="form-group">
-            <label for="location">Lieu</label>
-            {% set curl = form.get('location', item.location if item else '') %}
-            <select id="location" name="location" required>
-                <option value="">-- Choisir un lieu --</option>
-                {% for location in locations %}
-                    <option value="{{ location }}" {% if location == curl %}selected{% endif %}>{{ location }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="photo">Photo (facultatif, 5 Mo max)</label>
-            <input type="file" id="photo" name="photo" accept="image/png,image/jpeg,image/webp">
-            {% if item and item.photo_filename %}
-                <p>Photo actuelle :</p>
-                <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
-                     alt="Photo actuelle" style="max-width:150px;border-radius:8px;">
+{% set form_data = form|default({}) %}
+<section class="item-declare-page">
+    <div class="item-declare-banner item-declare-banner-{{ item_type }}">
+        <span class="item-page-eyebrow">UEMFIND · COMMUNAUTÉ UEMF</span>
+        <h1>{{ titre_page }}</h1>
+        <p>
+            {% if item_type == "lost" %}
+                Décrivez l’objet et le lieu où vous l’avez perdu. La communauté peut vous aider à le retrouver.
+            {% else %}
+                Décrivez ce que vous avez trouvé afin que son propriétaire puisse le reconnaître et le récupérer.
             {% endif %}
+        </p>
+    </div>
+
+    <div class="item-declare-layout">
+        <div class="item-declare-aside">
+            <span class="item-aside-icon" aria-hidden="true">
+                {% if item_type == "lost" %}⌕{% else %}✓{% endif %}
+            </span>
+            <h2>
+                {% if item_type == "lost" %}Chaque détail compte.{% else %}Un beau geste peut tout changer.{% endif %}
+            </h2>
+            <p>
+                {% if item_type == "lost" %}
+                    Ajoutez des détails distinctifs pour faciliter l’identification de votre objet.
+                {% else %}
+                    Évitez de révéler tous les signes distinctifs : le propriétaire pourra les confirmer.
+                {% endif %}
+            </p>
+            <div class="item-aside-note">
+                <strong>Conseil</strong>
+                <span>Indiquez un lieu précis et une date aussi exacte que possible.</span>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">
-            {% if item %}Enregistrer les modifications
-            {% elif item_type == "lost" %}Déclarer l'objet perdu
-            {% else %}Déclarer l'objet trouvé{% endif %}
-        </button>
-    </form>
+        <div class="item-declare-form-card">
+            <div class="item-form-heading">
+                <span>ÉTAPE UNIQUE · ENVIRON 2 MIN</span>
+                <h2>Informations sur l’objet</h2>
+                <p>Les champs marqués d’un astérisque sont obligatoires.</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="auth-alerts" role="status" aria-live="polite">
+                        {% for category, message in messages %}
+                            <p class="auth-alert auth-alert-{{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data" class="item-form" data-submit-label="Enregistrement…">
+
+                <div class="item-form-grid">
+                    <div class="item-form-field">
+                        <label for="title">Nom de l’objet <span>*</span></label>
+                        <input type="text" id="title" name="title" maxlength="120" required
+                               value="{{ form_data.get('title', '') }}"
+                               placeholder="Ex. : Clés avec porte-clés bleu">
+                    </div>
+
+                    <div class="item-form-field">
+                        <label for="category-select">Catégorie <span>*</span></label>
+                        <select id="category-select" name="category_select" required>
+                            <option value="" selected disabled>Choisissez une catégorie</option>
+                            <option value="Carte étudiante">Carte étudiante</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Académique">Académique</option>
+                            <option value="Clés">Clés</option>
+                            <option value="Vêtements">Vêtements</option>
+                            <option value="Sac">Sac</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                        <input type="text" id="category-custom" name="category_custom" maxlength="100"
+                               value="{{ form_data.get('category_custom', '') }}"
+                               placeholder="Précisez si besoin">
+                        <input type="hidden" id="category" name="category" value="{{ form_data.get('category', '') }}">
+                    </div>
+
+                    <div class="item-form-field item-form-field-full">
+                        <label for="description">Description <span>*</span></label>
+                        <textarea id="description" name="description" rows="4" maxlength="2000" required
+                                  placeholder="Couleur, marque, état et autres détails utiles...">{{ form_data.get('description', '') }}</textarea>
+                    </div>
+
+                    <div class="item-form-field">
+                        <label for="event_date">
+                            {% if item_type == "lost" %}Date de la perte{% else %}Date de la découverte{% endif %}
+                            <span>*</span>
+                        </label>
+                        <input type="date" id="event_date" name="event_date" required
+                               value="{{ form_data.get('event_date', '') }}">
+                    </div>
+
+                    <div class="item-form-field">
+                        <label for="location-select">
+                            {% if item_type == "lost" %}Lieu de perte{% else %}Lieu de dépôt de l’objet trouvé{% endif %}
+                            <span>*</span>
+                        </label>
+                        <select id="location-select" name="location_select" required>
+                            <option value="" selected disabled>Choisissez un lieu</option>
+                            <option value="Bibliothèque">Bibliothèque</option>
+                            <option value="Complexe sportif">Complexe sportif</option>
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Cafétéria">Cafétéria</option>
+                            <option value="Entre bâtiments">Entre bâtiments</option>
+                            <option value="Agora">Agora</option>
+                            <option value="UVillage">UVillage</option>
+                            <option value="Bâtiment">Bâtiment</option>
+                            <option value="Administration">Administration</option>
+                            {% if item_type == "found" %}
+                                <option value="Sécurité">Sécurité (lieu de dépôt)</option>
+                            {% endif %}
+                            <option value="Autre">Autre</option>
+                        </select>
+                        <select id="location-subgroup" class="location-subgroup" aria-label="Sous-lieu">
+                            <option value="">Choisissez un sous-lieu</option>
+                        </select>
+                        <input type="text" id="location-custom" name="location_custom" maxlength="120"
+                               value="{{ form_data.get('location_custom', '') }}"
+                               placeholder="Précisez le lieu exact si besoin">
+                        <input type="hidden" id="location" name="location" value="{{ form_data.get('location', '') }}">
+                        <input type="hidden" id="location_detail" name="location_detail" value="{{ form_data.get('location_detail', '') }}">
+                    </div>
+
+                    <div class="item-form-field item-form-field-full">
+                        <label for="finder_phone">Téléphone de contact (facultatif)</label>
+                        <input type="tel" id="finder_phone" name="finder_phone" maxlength="30"
+                               value="{{ form_data.get('finder_phone', '') }}"
+                               placeholder="Ex. : +212 6 12 34 56 78">
+                    </div>
+
+                    <div class="item-form-field item-form-field-full">
+                        <label for="finder_note">Détails complémentaires (facultatif)</label>
+                        <textarea id="finder_note" name="finder_note" rows="3" maxlength="1000"
+                                  placeholder="Par exemple : ‘Je peux confirmer l’objet si vous me contactez, je l’ai gardé chez moi’ ...">{{ form_data.get('finder_note', '') }}</textarea>
+                    </div>
+
+                    <div class="item-form-field item-form-field-full">
+                        <label for="photo">Photo (facultative)</label>
+                        <input type="file" id="photo" name="photo" accept="image/png,image/jpeg,image/webp">
+                        <small>PNG, JPG ou WebP. Une photo aide à reconnaître l’objet ; évitez d’y montrer des informations sensibles.</small>
+                        <img class="item-photo-preview" data-photo-preview alt="Aperçu de la photo sélectionnée" hidden>
+                    </div>
+                </div>
+
+                <div class="item-form-actions">
+                    <a href="{{ url_for('items.list_items') }}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn item-submit item-submit-{{ item_type }}">
+                        {% if item_type == "lost" %}Publier mon objet perdu{% else %}Publier l’objet trouvé{% endif %}
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </section>
+
+<script>
+    const categorySelect = document.getElementById('category-select');
+    const categoryCustom = document.getElementById('category-custom');
+    const categoryHidden = document.getElementById('category');
+
+    const locationSelect = document.getElementById('location-select');
+    const locationSubgroup = document.getElementById('location-subgroup');
+    const locationCustom = document.getElementById('location-custom');
+    const locationHidden = document.getElementById('location');
+    const locationDetailHidden = document.getElementById('location_detail');
+
+    const locationOptions = {
+        "UVillage": ["Restaurant UVillage", "Superette UVillage", "Espace UVillage", "Parking UVillage", "Mosquée UVillage", "Salle d’étude UVillage"],
+        "Bâtiment": ["B1", "B2", "B3", "B4", "Amphithéâtre", "Salle de cours"],
+        {% if item_type == "found" %}
+            "Sécurité": ["Sécurité UF1", "Sécurité UF2", "Sécurité UF3", "Sécurité UF4", "Sécurité UG1", "Sécurité UG2", "Sécurité UG3", "Sécurité UG4"]
+        {% endif %}
+    };
+
+    function syncCategoryValue() {
+        const selected = categorySelect.value;
+        categoryHidden.value = selected === 'Autre' ? (categoryCustom.value || '') : selected;
+    }
+
+    function populateLocationSubgroup(value) {
+        locationSubgroup.innerHTML = '<option value="">Choisissez un sous-lieu</option>';
+        const options = locationOptions[value] || [];
+        options.forEach((option) => {
+            const item = document.createElement('option');
+            item.value = option;
+            item.textContent = option;
+            locationSubgroup.appendChild(item);
+        });
+        locationSubgroup.style.display = options.length ? 'block' : 'none';
+    }
+
+    function syncLocationValue() {
+        const primary = locationSelect.value;
+        const secondary = locationSubgroup.value;
+        const custom = locationCustom.value.trim();
+        const base = primary === 'Autre' ? (custom || 'Autre lieu') : primary;
+        const finalText = secondary ? `${base} • ${secondary}` : base;
+        const detail = custom && primary !== 'Autre' ? custom : (primary === 'Autre' ? custom : '');
+
+        locationHidden.value = finalText;
+        locationDetailHidden.value = detail;
+    }
+
+    categorySelect.addEventListener('change', () => {
+        if (categorySelect.value !== 'Autre') {
+            categoryCustom.value = '';
+        }
+        syncCategoryValue();
+    });
+    categoryCustom.addEventListener('input', syncCategoryValue);
+
+    locationSelect.addEventListener('change', () => {
+        populateLocationSubgroup(locationSelect.value);
+        syncLocationValue();
+    });
+    locationSubgroup.addEventListener('change', syncLocationValue);
+    locationCustom.addEventListener('input', syncLocationValue);
+
+    populateLocationSubgroup(locationSelect.value);
+    syncCategoryValue();
+    syncLocationValue();
+
+    document.querySelector('.item-form').addEventListener('submit', () => {
+        syncCategoryValue();
+        syncLocationValue();
+    });
+</script>
 {% endblock %}

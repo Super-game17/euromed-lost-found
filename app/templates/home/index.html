@@ -7,179 +7,110 @@
 
 {% block content %}
 
-<!-- =========================
-     HERO
-     ========================= -->
-
-<section class="hero">
-
-    <div class="hero-container">
-
-        <div class="hero-content">
-
-            <span class="hero-badge">
-                UEMF • Campus
-            </span>
-
-            <h1>
-                Retrouvez ce que vous avez
-                <span>perdu.</span>
-            </h1>
-
-            <p>
-                Euromed Lost & Found facilite la recherche
-                et la restitution des objets perdus et trouvés
-                sur le campus de l'UEMF.
-            </p>
-
-            <div class="hero-buttons">
-
-                <a href="#" class="btn btn-primary">
-                    🔎 Rechercher un objet
-                </a>
-
-                <a href="#" class="btn btn-secondary">
-                    + Déclarer un objet
-                </a>
-
-            </div>
-
+{% if current_user.is_authenticated %}
+<section class="dashboard-page">
+    <div class="dashboard-header dashboard-welcome">
+        <div>
+            <span class="hero-badge">ESPACE PERSONNEL · UEMFIND</span>
+            <h1>Bonjour, {{ current_user.first_name }}.</h1>
+            <p>Que souhaitez-vous faire aujourd’hui ?</p>
         </div>
+        <span class="dashboard-welcome-mark" aria-hidden="true">UEMFIND</span>
+    </div>
 
+    <div class="dashboard-grid">
+        <a class="dashboard-card dashboard-card-primary" href="{{ url_for('items.list_items') }}">
+            <span class="dashboard-card-icon" aria-hidden="true">⌕</span>
+            <span class="dashboard-card-label">Explorer</span>
+            <strong>Rechercher un objet</strong>
+            <span>Parcourez les objets perdus ou trouvés sur le campus.</span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a class="dashboard-card" href="{{ url_for('items.declare_lost') }}">
+            <span class="dashboard-card-icon" aria-hidden="true">↗</span>
+            <span class="dashboard-card-label">Vous avez perdu quelque chose ?</span>
+            <strong>Déclarer un objet perdu</strong>
+            <span>Ajoutez les informations utiles pour aider à le retrouver.</span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a class="dashboard-card" href="{{ url_for('items.declare_found') }}">
+            <span class="dashboard-card-icon dashboard-card-icon-green" aria-hidden="true">✓</span>
+            <span class="dashboard-card-label">Vous avez trouvé quelque chose ?</span>
+            <strong>Déclarer un objet trouvé</strong>
+            <span>Signalez-le pour aider son propriétaire à le récupérer.</span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a class="dashboard-card dashboard-card-subtle" href="{{ url_for('items.my_items') }}">
+            <span class="dashboard-card-icon" aria-hidden="true">▤</span>
+            <span class="dashboard-card-label">Votre activité</span>
+            <strong>Mes déclarations</strong>
+            <span>Consultez les annonces que vous avez publiées.</span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+</section>
+{% else %}
+<section class="hero hero-campuses">
+    <div class="hero-container">
+        <div class="hero-content">
+            <span class="hero-badge">LA PLATEFORME SOLIDAIRE DU CAMPUS</span>
+            <h1>Un objet perdu ? <span>Retrouvons-le ensemble.</span></h1>
+            <p>UEMFIND aide la communauté de l’Université Euromed de Fès à signaler, rechercher et restituer les objets perdus ou trouvés.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Rejoindre la communauté</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline">J’ai déjà un compte</a>
+            </div>
+        </div>
 
         <div class="hero-visual">
-
-            <div class="hero-card">
-
-                <div class="hero-card-icon">
-                    🔎
-                </div>
-
-                <h3>
-                    Un objet perdu ?
-                </h3>
-
-                <p>
-                    Déclarez-le en quelques secondes
-                    et laissez notre plateforme vous aider
-                    à retrouver son propriétaire.
-                </p>
-
+            <div class="hero-visual-card">
+                <img class="hero-brand-image"
+                     src="{{ url_for('static', filename='images/uemfind_logo_v1.png') }}"
+                     alt="Logo UEMFIND — Lost & Found UEMF">
             </div>
-
         </div>
-
     </div>
-
 </section>
 
-
-<!-- =========================
-     HOW IT WORKS
-     ========================= -->
-
-<section class="section">
-
+<section class="section" id="comment-ca-marche">
     <div class="container">
-
-        <h2 class="section-title">
-            Comment ça marche ?
-        </h2>
-
-        <p class="section-subtitle">
-            Retrouver un objet devient simple en trois étapes.
-        </p>
-
+        <h2 class="section-title">Comment ça marche ?</h2>
+        <p class="section-subtitle">Retrouver un objet devient simple en trois étapes.</p>
 
         <div class="steps">
-
             <div class="card step-card">
-
-                <div class="step-number">
-                    1
-                </div>
-
-                <h3>
-                    Déclarez
-                </h3>
-
-                <p>
-                    Signalez un objet que vous avez perdu
-                    ou trouvé sur le campus.
-                </p>
-
+                <div class="step-number">1</div>
+                <h3>Déclarez</h3>
+                <p>Signalez un objet perdu ou trouvé sur le campus avec des détails précis.</p>
             </div>
 
-
             <div class="card step-card">
-
-                <div class="step-number">
-                    2
-                </div>
-
-                <h3>
-                    Recherchez
-                </h3>
-
-                <p>
-                    Consultez les objets déclarés
-                    et utilisez la recherche.
-                </p>
-
+                <div class="step-number">2</div>
+                <h3>Recherchez</h3>
+                <p>Consultez les objets déclarés et filtrez par catégorie, type ou lieu.</p>
             </div>
 
-
             <div class="card step-card">
-
-                <div class="step-number">
-                    3
-                </div>
-
-                <h3>
-                    Restituez
-                </h3>
-
-                <p>
-                    Lorsqu'une correspondance est trouvée,
-                    l'objet peut être restitué à son propriétaire.
-                </p>
-
+                <div class="step-number">3</div>
+                <h3>Restituez</h3>
+                <p>Lorsque la correspondance est trouvée, le propriétaire peut reprendre son objet.</p>
             </div>
-
         </div>
-
     </div>
-
 </section>
-
-
-<!-- =========================
-     CALL TO ACTION
-     ========================= -->
 
 <section class="section">
-
     <div class="container">
-
         <div class="cta">
-
-            <h2>
-                Vous avez trouvé un objet ?
-            </h2>
-
-            <p>
-                Aidez un autre étudiant à retrouver
-                ce qu'il a perdu.
-            </p>
-
-            <a href="#" class="btn btn-secondary">
-                Déclarer un objet trouvé
-            </a>
-
+            <h2>Vous avez trouvé un objet ?</h2>
+            <p>Aidez un autre étudiant à retrouver ce qu’il a perdu.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Rejoindre UEMFIND</a>
         </div>
-
     </div>
-
 </section>
+{% endif %}
 
 {% endblock %}

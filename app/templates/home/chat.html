@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Chat communautaire{% endblock %}
+
+{% block content %}
+<section class="community-chat-page">
+    <div class="community-chat-shell">
+        <aside class="community-chat-sidebar">
+            <div class="community-chat-header">
+                <span class="item-page-eyebrow">UEMFIND · MESSAGERIE</span>
+                <h1>Discussions</h1>
+            </div>
+
+            <nav class="community-chat-users" aria-label="Conversations">
+                <a class="community-user{% if not active_user %} active{% endif %}"
+                   href="{{ url_for('home.community_chat') }}"
+                   {% if not active_user %}aria-current="page"{% endif %}>
+                    Chat communautaire
+                </a>
+                <h2 class="community-chat-section-title">Messages privés</h2>
+                {% for user in users %}
+                    <a class="community-user{% if active_user and active_user.id == user.id %} active{% endif %}"
+                       href="{{ url_for('home.community_chat', user_id=user.id) }}"
+                       {% if active_user and active_user.id == user.id %}aria-current="page"{% endif %}>
+                        {{ user.first_name }} {{ user.last_name }}
+                    </a>
+                {% else %}
+                    <p class="community-chat-empty-users">Aucun autre membre pour le moment.</p>
+                {% endfor %}
+            </nav>
+        </aside>
+
+        <div class="community-chat-room">
+            <div class="community-chat-topbar">
+                <div>
+                    <span class="item-page-eyebrow">
+                        {% if active_user %}MESSAGE PRIVÉ{% else %}DISCUSSION PUBLIQUE{% endif %}
+                    </span>
+                    <h2>
+                        {% if active_user %}
+                            {{ active_user.first_name }} {{ active_user.last_name }}
+                        {% else %}
+                            Communauté Euromed
+                        {% endif %}
+                    </h2>
+                </div>
+                <span class="community-chat-pill">
+                    {% if active_user %}Privé{% else %}Communauté{% endif %}
+                </span>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="auth-alerts community-chat-alerts" role="status" aria-live="polite">
+                        {% for category, message in messages %}
+                            <p class="auth-alert auth-alert-{{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="community-chat-messages" aria-live="polite">
+                {% for message in messages %}
+                    <article class="chat-message{% if message.sender_id == current_user.id %} chat-message-own{% endif %}">
+                        <span class="chat-user">
+                            {% if message.sender_id == current_user.id %}
+                                Vous
+                            {% else %}
+                                {{ message.sender.first_name }} {{ message.sender.last_name }}
+                            {% endif %}
+                            <time datetime="{{ message.created_at.isoformat() }}">
+                                {{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}
+                            </time>
+                        </span>
+                        <p>{{ message.body }}</p>
+                    </article>
+                {% else %}
+                    <p class="community-chat-empty">
+                        {% if active_user %}
+                            Aucun message avec {{ active_user.first_name }} pour le moment. Écrivez le premier message.
+                        {% else %}
+                            Aucun message dans la communauté pour le moment. Lancez la discussion.
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </div>
+
+            <form class="community-chat-form" method="POST"
+                  action="{{ url_for('home.community_chat', user_id=active_user.id) if active_user else url_for('home.community_chat') }}">
+                {% if active_user %}
+                    <input type="hidden" name="recipient_id" value="{{ active_user.id }}">
+                {% endif %}
+                <label class="visually-hidden" for="chat-message">Votre message</label>
+                <textarea id="chat-message" name="message" rows="2" maxlength="2000" required
+                          placeholder="Écrivez un message..."></textarea>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

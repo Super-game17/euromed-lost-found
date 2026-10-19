@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Mon profil | UEMFIND{% endblock %}
+
+{% block content %}
+<section class="account-page">
+    <div class="account-heading">
+        <span class="hero-badge">ESPACE PERSONNEL</span>
+        <h1>Mon profil</h1>
+        <p>Vos informations de compte UEMFIND.</p>
+    </div>
+
+    <div class="account-card">
+        <div class="account-avatar" aria-hidden="true">
+            {{ user.first_name[:1] }}{{ user.last_name[:1] }}
+        </div>
+        <div class="account-details">
+            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+            <p>{{ user.email }}</p>
+            <span>Membre depuis le {{ user.created_at.strftime('%d/%m/%Y') }}</span>
+        </div>
+    </div>
+
+    <div class="account-actions">
+        <a href="{{ url_for('items.my_items') }}" class="btn btn-primary">Mes déclarations</a>
+        <a href="{{ url_for('home.index') }}" class="btn btn-outline">Retour à mon espace</a>
+    </div>
+</section>
+{% endblock %}

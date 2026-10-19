@@ -2,42 +2,64 @@
 
     <div class="navbar-container">
 
-        <a href="/" class="logo">
+        <a href="{{ url_for('home.index') }}" class="logo">
 
             <img
-                   src="{{ url_for('static', filename='images/uemf-logo.png') }}"
-                   alt="UEMF"
+                   src="{{ url_for('static', filename='images/uemfind_logo_v1.png') }}"
+                   alt="UEMFIND — Lost & Found UEMF"
                    class="uemf-logo"
           >
-
-            <span class="logo-text">
-                 Lost & Found
-            </span>
 
         </a>
 
 
         <div class="nav-links">
 
-            <a href="/">
+            <a href="{{ url_for('home.index') }}">
                 Accueil
             </a>
 
-            <a href="#">
-                Objets perdus
-            </a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('items.list_items') }}">
+                    Rechercher
+                </a>
 
-            <a href="#">
-                Objets trouvés
-            </a>
+                <a href="{{ url_for('home.community_chat') }}">
+                    Chat
+                </a>
 
-            <a href="#">
-                Recherche
-            </a>
+                <a href="{{ url_for('items.declare_lost') }}">
+                    Déclarer perdu
+                </a>
 
-            <a href="#" class="btn btn-primary">
-                Connexion
-            </a>
+                <a href="{{ url_for('items.declare_found') }}">
+                    Déclarer trouvé
+                </a>
+
+                <a href="{{ url_for('items.my_items') }}">
+                    Mes déclarations
+                </a>
+
+                <a href="{{ url_for('auth.profile') }}">
+                    Mon profil
+                </a>
+
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">
+                    Déconnexion
+                </a>
+            {% else %}
+                <a href="{{ url_for('home.index') }}#comment-ca-marche">
+                    Comment ça marche
+                </a>
+
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline">
+                    S'inscrire
+                </a>
+
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                    Connexion
+                </a>
+            {% endif %}
 
         </div>
 

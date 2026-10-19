@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion | Euromed Lost & Found{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-layout">
+        <aside class="auth-intro">
+            <span class="auth-eyebrow">UEMF · LOST & FOUND</span>
+            <h1>Les bonnes retrouvailles commencent ici.</h1>
+            <p>
+                Connectez-vous pour suivre vos déclarations et aider les objets
+                perdus sur le campus à retrouver leur propriétaire.
+            </p>
+
+            <div class="auth-highlight">
+                <span class="auth-highlight-icon" aria-hidden="true">↗</span>
+                <div>
+                    <strong>Votre espace, en toute simplicité</strong>
+                    <span>Retrouvez vos annonces et vos échanges au même endroit.</span>
+                </div>
+            </div>
+
+            <div class="auth-decoration" aria-hidden="true">
+                <span class="auth-decoration-ring"></span>
+                <span class="auth-decoration-dot"></span>
+                <div class="auth-found-card">
+                    <span class="auth-found-card-icon">✓</span>
+                    <span>
+                        <strong>Objet retrouvé</strong>
+                        <small>Une bonne nouvelle sur le campus</small>
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="auth-form-panel">
+            <div class="auth-form-card">
+                <span class="auth-form-kicker">Heureux de vous revoir</span>
+                <h2>Connexion</h2>
+                <p class="auth-form-description">Accédez à votre compte Euromed Lost & Found.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="auth-alerts" role="status" aria-live="polite">
+                            {% for category, message in messages %}
+                                <p class="auth-alert auth-alert-{{ category }}">{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form class="auth-form" method="POST">
+                    <div class="auth-field">
+                        <label for="email">Adresse e-mail</label>
+                        <input id="email" type="email" name="email" autocomplete="email"
+                               placeholder="nom@exemple.com" required>
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="password">Mot de passe</label>
+                        <input id="password" type="password" name="password"
+                               autocomplete="current-password" placeholder="Votre mot de passe" required>
+                    </div>
+
+                    <a class="auth-forgot-link" href="{{ url_for('auth.forgot_password') }}">
+                        Mot de passe oublié ?
+                    </a>
+
+                    <button class="auth-submit" type="submit">
+                        Se connecter <span aria-hidden="true">→</span>
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    Vous n’avez pas encore de compte ?
+                    <a href="{{ url_for('auth.register') }}">Créer un compte</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

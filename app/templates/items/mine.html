@@ -8,7 +8,7 @@
 
     <div class="actions">
         <a href="{{ url_for('items.declare_lost') }}" class="btn btn-primary">Déclarer un objet perdu</a>
-        <a href="{{ url_for('items.declare_found') }}" class="btn btn-success">Déclarer un objet trouvé</a>
+        <a href="{{ url_for('items.declare_found') }}" class="btn btn-secondary">Déclarer un objet trouvé</a>
     </div>
 
     {% if items %}
@@ -27,11 +27,11 @@
                     <tr>
                         <td>{% if item.item_type == 'lost' %}Perdu{% else %}Trouvé{% endif %}</td>
                         <td>{{ item.title }}</td>
-                        <td>{{ item.date_event.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ item.event_date.strftime('%d/%m/%Y') }}</td>
                         <td>
-                            {% if item.status == 'open' %}Ouvert
-                            {% elif item.status == 'in_progress' %}En cours
-                            {% elif item.status == 'returned' %}Restitué
+                            {% if item.status == 'actif' %}Actif
+                            {% elif item.status == 'en_cours' %}En cours
+                            {% elif item.status == 'restitue' %}Restitué
                             {% else %}{{ item.status }}{% endif %}
                         </td>
                         <td>

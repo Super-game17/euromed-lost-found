@@ -11,39 +11,47 @@
 
     <h1>{{ item.title }}</h1>
 
-    {% if item.photo_filename %}
-        <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
+    {% if item.photo %}
+        <img src="{{ url_for('static', filename='uploads/' + item.photo) }}"
              alt="{{ item.title }}" class="detail-photo">
     {% endif %}
 
     <ul class="detail-info">
         <li><strong>Catégorie :</strong> {{ item.category }}</li>
         <li><strong>Lieu :</strong> {{ item.location }}</li>
-        <li><strong>Date :</strong> {{ item.date_event.strftime('%d/%m/%Y') }}</li>
+        <li><strong>Date :</strong> {{ item.event_date.strftime('%d/%m/%Y') }}</li>
         <li><strong>Statut :</strong>
-            {% if item.status == 'open' %}Ouvert
-            {% elif item.status == 'in_progress' %}Réclamation en cours
-            {% elif item.status == 'returned' %}Restitué
+            {% if item.status == 'actif' %}Disponible
+            {% elif item.status == 'en_cours' %}En cours
+            {% elif item.status == 'restitue' %}Restitué
             {% else %}{{ item.status }}{% endif %}
         </li>
     </ul>
 
     <p>{{ item.description }}</p>
 
-    <div class="actions">
-        {% if is_owner and item.status == 'open' %}
-            <a href="{{ url_for('items.edit_item', item_id=item.id) }}" class="btn btn-primary">Modifier</a>
+    <div class="detail-meta-card">
+        <h3>Profil du déclarant</h3>
+        <p><strong>Nom :</strong> {{ item.user.first_name }} {{ item.user.last_name }}</p>
+        <p><strong>Email :</strong> {{ item.user.email }}</p>
+        {% if item.finder_phone %}
+            <p><strong>Téléphone :</strong> {{ item.finder_phone }}</p>
+        {% endif %}
+        {% if item.finder_note %}
+            <p><strong>Information complémentaire :</strong> {{ item.finder_note }}</p>
+        {% endif %}
+    </div>
 
+    <div class="actions">
+        {% if is_owner %}
             <form method="POST" action="{{ url_for('items.delete_item', item_id=item.id) }}"
                   style="display:inline;"
                   onsubmit="return confirm('Supprimer cette déclaration ?');">
                 <button type="submit" class="btn btn-danger">Supprimer</button>
             </form>
-        {% elif not is_owner and item.status == 'open' %}
-            {# EMPLACEMENT GROUPE 3 : bouton « Réclamer cet objet » #}
         {% endif %}
 
-        <a href="{{ url_for('items.list_items') }}" class="btn btn-success">Retour à la liste</a>
+        <a href="{{ url_for('items.list_items') }}" class="btn btn-outline">Retour à la liste</a>
     </div>
 
 </section>

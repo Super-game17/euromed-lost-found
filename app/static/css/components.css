@@ -20,6 +20,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 22px;
 }
 
 /* =========================
@@ -29,7 +30,9 @@
 .uemf-logo {
     height: 50px;
     width: auto;
+    max-width: 220px;
     display: block;
+    object-fit: contain;
 }
 
 .logo {
@@ -50,16 +53,27 @@
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 28px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px 18px;
 }
 
 .nav-links a {
     color: var(--text-light);
-    font-size: 15px;
+    font-size: 14px;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
+    color: var(--primary-color);
+}
+
+.nav-links a.btn-primary {
+    color: var(--white);
+}
+
+.nav-links a.btn-outline {
     color: var(--primary-color);
 }
 
@@ -94,6 +108,16 @@
     background-color: var(--primary-dark);
 }
 
+.btn-ghost {
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+.btn-ghost:hover {
+    background: rgba(255,255,255,0.16);
+}
+
 .btn-secondary {
     background-color: var(--secondary-color);
     color: var(--white);
@@ -101,6 +125,15 @@
 
 .btn-secondary:hover {
     opacity: 0.9;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    filter: brightness(0.92);
 }
 
 .btn-outline {

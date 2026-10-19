@@ -4,49 +4,105 @@
 
 {% block content %}
 <section class="items-page">
-    <h1>Objets perdus et trouvés</h1>
-
-    <form method="GET" class="filters">
-        <select name="type">
-            <option value="">Tous les types</option>
-            <option value="lost" {% if selected_type == 'lost' %}selected{% endif %}>Perdus</option>
-            <option value="found" {% if selected_type == 'found' %}selected{% endif %}>Trouvés</option>
-        </select>
-
-        <select name="category">
-            <option value="">Toutes les catégories</option>
-            {% for category in categories %}
-                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
-            {% endfor %}
-        </select>
-
-        <button type="submit" class="btn btn-primary">Filtrer</button>
-    </form>
-
-    {% if items %}
-        <div class="items-grid">
-            {% for item in items %}
-                <article class="item-card">
-                    {% if item.photo_filename %}
-                        <img src="{{ url_for('static', filename='uploads/' + item.photo_filename) }}"
-                             alt="{{ item.title }}">
-                    {% endif %}
-
-                    {# Bleu = perdu / Vert = trouvé #}
-                    <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
-                        {% if item.item_type == 'lost' %}Perdu{% else %}Trouvé{% endif %}
-                    </span>
-
-                    <h3>{{ item.title }}</h3>
-                    <p>{{ item.category }} · {{ item.location }}</p>
-                    <p>{{ item.date_event.strftime('%d/%m/%Y') }}</p>
-
-                    <a href="{{ url_for('items.item_detail', item_id=item.id) }}" class="btn btn-primary">Voir le détail</a>
-                </article>
-            {% endfor %}
+    <header class="items-search-banner">
+        <div class="items-search-banner-content">
+            <span class="item-page-eyebrow">ENSEMBLE, ON LES RETROUVE</span>
+            <h1>La recherche commence ici.</h1>
+            <p>Parcourez les annonces de la communauté UEMF et retrouvez un objet perdu.</p>
         </div>
-    {% else %}
-        <p>Aucun objet ne correspond à votre recherche.</p>
-    {% endif %}
+    </header>
+
+    <div class="items-search-content">
+        <form method="GET" class="items-search-form">
+            <label class="visually-hidden" for="item-search">Rechercher un objet par nom, catégorie, description ou lieu</label>
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="item-search" type="search" name="q" value="{{ search_term }}"
+                   placeholder="Ex. : clés, sac, bibliothèque…">
+
+            <label class="visually-hidden" for="item-type">Filtrer par type</label>
+            <select id="item-type" name="type">
+                <option value="" {% if not item_type %}selected{% endif %}>Tous les objets</option>
+                <option value="lost" {% if item_type == 'lost' %}selected{% endif %}>Perdus</option>
+                <option value="found" {% if item_type == 'found' %}selected{% endif %}>Trouvés</option>
+            </select>
+
+            <label class="visually-hidden" for="item-category">Filtrer par catégorie</label>
+            <select id="item-category" name="category">
+                <option value="" {% if not category_filter %}selected{% endif %}>Toutes catégories</option>
+                <option value="Carte étudiante" {% if category_filter == 'Carte étudiante' %}selected{% endif %}>Carte étudiante</option>
+                <option value="Électronique" {% if category_filter == 'Électronique' %}selected{% endif %}>Électronique</option>
+                <option value="Académique" {% if category_filter == 'Académique' %}selected{% endif %}>Académique</option>
+                <option value="Clés" {% if category_filter == 'Clés' %}selected{% endif %}>Clés</option>
+                <option value="Vêtements" {% if category_filter == 'Vêtements' %}selected{% endif %}>Vêtements</option>
+                <option value="Sac" {% if category_filter == 'Sac' %}selected{% endif %}>Sac</option>
+                <option value="Autre" {% if category_filter == 'Autre' %}selected{% endif %}>Autre</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+            {% if search_term or item_type or category_filter %}
+                <a class="items-search-clear" href="{{ url_for('items.list_items') }}">Effacer</a>
+            {% endif %}
+        </form>
+
+        <div class="items-results-heading">
+            <div>
+                <span class="item-page-eyebrow">TABLEAU DES ANNONCES</span>
+                <h2>
+                    {% if item_type == "lost" %}Objets perdus
+                    {% elif item_type == "found" %}Objets trouvés
+                    {% else %}Annonces récentes{% endif %}
+                </h2>
+            </div>
+            {% if current_user.is_authenticated %}
+                <div class="items-quick-actions">
+                    <a href="{{ url_for('items.declare_lost') }}" class="btn btn-outline">＋ Objet perdu</a>
+                    <a href="{{ url_for('items.declare_found') }}" class="btn btn-secondary">＋ Objet trouvé</a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if items %}
+            <div class="items-grid">
+                {% for item in items %}
+                    <article class="item-card">
+                        {% if item.photo %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.photo) }}"
+                                 alt="{{ item.title }}" loading="lazy">
+                        {% else %}
+                            <div class="item-card-placeholder" aria-hidden="true">
+                                {% if item.item_type == "lost" %}⌕{% else %}✓{% endif %}
+                            </div>
+                        {% endif %}
+
+                        <div class="item-card-content">
+                            <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
+                                {% if item.item_type == 'lost' %}Objet perdu{% else %}Objet trouvé{% endif %}
+                            </span>
+
+                            <h3>{{ item.title }}</h3>
+                            <p class="item-card-description">{{ item.description }}</p>
+                            <div class="item-card-meta">
+                                <span>⌖ {{ item.location }}</span>
+                                <span>{{ item.event_date.strftime('%d/%m/%Y') }}</span>
+                            </div>
+
+                            <a href="{{ url_for('items.item_detail', item_id=item.id) }}" class="item-card-link">
+                                Voir les détails <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="items-empty-state">
+                <span aria-hidden="true">⌕</span>
+                <h3>Aucun objet ne correspond à cette recherche.</h3>
+                <p>Essayez un autre mot-clé ou modifiez le filtre.</p>
+                {% if search_term or item_type %}
+                    <a href="{{ url_for('items.list_items') }}" class="btn btn-outline">Voir toutes les annonces</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
 </section>
 {% endblock %}

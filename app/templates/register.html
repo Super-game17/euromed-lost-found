@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - Lost & Found</title>
+</head>
+<body>
+    <h2>Créer un compte</h2>
+    
+    <!-- Affichage des messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label>Nom d'utilisateur :</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label>Email :</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Mot de passe :</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit">S'inscrire</button>
+    </form>
+    <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+</body>
+</html>
