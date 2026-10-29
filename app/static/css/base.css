@@ -28,6 +28,29 @@ a {
     color: inherit;
 }
 
+a,
+button,
+input,
+textarea,
+select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(0, 91, 150, 0.55);
+    outline-offset: 3px;
+}
+
+button,
+.btn {
+    transition: filter var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+button:active,
+.btn:active {
+    transform: scale(0.98);
+}
+
 /* =========================
    BUTTON RESET
    ========================= */
@@ -55,6 +78,11 @@ select {
 
 main {
     min-height: 80vh;
+}
+
+.mobile-home-dashboard,
+.mobile-home-guest {
+    display: none;
 }
 
 /* =========================

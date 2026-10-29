@@ -1,37 +1,31 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Mes réclamations</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block title %}Mes réclamations | UEMFIND{% endblock %}
+
+{% block content %}
+<section class="matching-page">
+    {% set back_url = url_for('home.index') %}
+    {% include "components/back_link.html" %}
+    <span class="item-page-eyebrow">SUIVI DE RESTITUTION</span>
     <h1>Mes réclamations</h1>
 
     {% if claims %}
-      <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-          <tr>
-            <th>Objet</th>
-            <th>Preuve</th>
-            <th>Statut</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for claim in claims %}
-            <tr>
-              <td>{{ claim.item.title }}</td>
-              <td>{{ claim.proof_description[:80] }}</td>
-              <td>{{ claim.status }}</td>
-              <td>
-                <a href="{{ url_for('matching.manage_claim', claim_id=claim.id) }}">Gérer</a>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <div class="matching-results">
+            {% for claim in claims %}
+                <article class="matching-result">
+                    <span class="badge {{ 'badge-green' if claim.status == 'restitue' else 'badge-blue' }}">{{ claim.status }}</span>
+                    <h2>{{ claim.item.title }}</h2>
+                    <p>{{ claim.proof_description|truncate(160) }}</p>
+                    <a class="btn btn-outline" href="{{ url_for('items.item_detail', item_id=claim.item.id) }}">Voir l’objet</a>
+                </article>
+            {% endfor %}
+        </div>
     {% else %}
-      <p>Vous n’avez encore aucune réclamation.</p>
+        <div class="matching-empty">
+            <h2>Pas encore de réclamation</h2>
+            <p>Quand vous enverrez une demande de vérification, son statut apparaîtra ici.</p>
+            <a class="btn btn-primary" href="{{ url_for('items.list_items') }}">Rechercher un objet</a>
+        </div>
     {% endif %}
-  </body>
-</html>
+</section>
+{% endblock %}

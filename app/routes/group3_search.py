@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from flask_login import login_required
 
 group3_search = Blueprint("group3_search", __name__)
 
@@ -47,6 +48,7 @@ OBJECTS = [
 
 
 @group3_search.route("/search", methods=["GET"])
+@login_required
 def search():
     # Récupération des critères envoyés par le formulaire
     keyword = request.args.get("keyword", "").strip().lower()

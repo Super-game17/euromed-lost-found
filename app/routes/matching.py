@@ -138,6 +138,13 @@ def claim_item(item_id):
 
     item = Item.query.get_or_404(item_id)
 
+    if item.item_type != "found" or item.status != "actif":
+        flash(
+            "Seuls les objets trouvés encore disponibles peuvent être réclamés.",
+            "info"
+        )
+        return redirect(url_for("items.item_detail", item_id=item.id))
+
     # Don't claim your own item
     if item.user_id == current_user.id:
 

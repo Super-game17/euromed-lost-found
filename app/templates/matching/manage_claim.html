@@ -1,27 +1,31 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Gestion de réclamation</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block title %}Gestion de réclamation | UEMFIND{% endblock %}
+
+{% block content %}
+<section class="matching-page">
+    {% set back_url = url_for('items.item_detail', item_id=claim.item.id) %}
+    {% include "components/back_link.html" %}
+    <span class="item-page-eyebrow">RESTITUTION</span>
     <h1>Gestion de réclamation</h1>
 
-    <p><strong>Objet :</strong> {{ claim.item.title }}</p>
-    <p><strong>Demandeur :</strong> {{ claim.claimer.first_name }} {{ claim.claimer.last_name }}</p>
-    <p><strong>Preuve :</strong> {{ claim.proof_description }}</p>
-    <p><strong>Statut actuel :</strong> {{ claim.status }}</p>
+    <article class="matching-item-summary">
+        <h2>{{ claim.item.title }}</h2>
+        <p><strong>Demandeur :</strong> {{ claim.claimer.first_name }} {{ claim.claimer.last_name }}</p>
+        <p><strong>Détail de vérification :</strong> {{ claim.proof_description }}</p>
+        <p><strong>Statut actuel :</strong> {{ claim.status }}</p>
+    </article>
 
-    <form method="post">
-      <label for="action">Action :</label>
-      <select id="action" name="action">
-        <option value="validate">Valider</option>
-        <option value="reject">Refuser</option>
-        <option value="restitute">Marquer comme restitué</option>
-      </select>
-      <button type="submit">Appliquer</button>
+    <p class="matching-trust-note">Une correspondance reste à confirmer par le propriétaire. Ne marquez l’objet comme restitué qu’après l’avoir remis en main propre.</p>
+
+    <form class="matching-form" method="post" data-submit-label="Mise à jour…" data-confirm-action>
+        <label for="action">Choisir une action</label>
+        <select id="action" name="action" required>
+            <option value="validate">Valider cette réclamation</option>
+            <option value="reject">Refuser cette réclamation</option>
+            <option value="restitute">Confirmer la restitution</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Appliquer</button>
     </form>
-
-    <p><a href="{{ url_for('matching.my_claims') }}">Retour à mes réclamations</a></p>
-  </body>
-</html>
+</section>
+{% endblock %}

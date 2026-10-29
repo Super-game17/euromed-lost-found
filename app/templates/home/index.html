@@ -7,6 +7,7 @@
 
 {% block content %}
 
+<div class="desktop-home-content">
 {% if current_user.is_authenticated %}
 <section class="dashboard-page">
     <div class="dashboard-header dashboard-welcome">
@@ -53,63 +54,182 @@
     </div>
 </section>
 {% else %}
-<section class="hero hero-campuses">
-    <div class="hero-container">
-        <div class="hero-content">
-            <span class="hero-badge">LA PLATEFORME SOLIDAIRE DU CAMPUS</span>
-            <h1>Un objet perdu ? <span>Retrouvons-le ensemble.</span></h1>
-            <p>UEMFIND aide la communauté de l’Université Euromed de Fès à signaler, rechercher et restituer les objets perdus ou trouvés.</p>
-            <div class="hero-buttons">
-                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Rejoindre la communauté</a>
-                <a href="{{ url_for('auth.login') }}" class="btn btn-outline">J’ai déjà un compte</a>
-            </div>
-        </div>
+<div class="app-intro" data-app-intro aria-hidden="true">
+    <button class="app-intro-skip" type="button" data-intro-skip>Passer</button>
+    <div class="intro-art" aria-hidden="true">
+        <span class="intro-orbit intro-orbit-one"></span>
+        <span class="intro-orbit intro-orbit-two"></span>
+        <span class="intro-pin">
+            <svg viewBox="0 0 48 48" focusable="false">
+                <path d="M38 20c0 11-14 23-14 23S10 31 10 20a14 14 0 1 1 28 0Z"></path>
+                <circle cx="24" cy="20" r="5"></circle>
+            </svg>
+        </span>
+        <span class="intro-object">
+            <svg viewBox="0 0 48 48" focusable="false">
+                <rect x="9" y="14" width="30" height="23" rx="5"></rect>
+                <path d="M17 14v-3a7 7 0 0 1 14 0v3M9 22h30"></path>
+                <circle cx="24" cy="28" r="2"></circle>
+            </svg>
+        </span>
+        <span class="intro-spark intro-spark-one"></span>
+        <span class="intro-spark intro-spark-two"></span>
+    </div>
+    <img src="{{ url_for('static', filename='images/uemfind_logo_v1.png') }}"
+         alt="" class="intro-logo">
+    <p class="intro-tagline">Every lost item deserves to find its way home.</p>
+</div>
 
-        <div class="hero-visual">
-            <div class="hero-visual-card">
-                <img class="hero-brand-image"
-                     src="{{ url_for('static', filename='images/uemfind_logo_v1.png') }}"
-                     alt="Logo UEMFIND — Lost & Found UEMF">
-            </div>
+<section class="guest-welcome" aria-labelledby="welcome-title">
+    <div class="guest-welcome-copy">
+        <span class="item-page-eyebrow">EUROMED LOST &amp; FOUND</span>
+        <h1 id="welcome-title">Welcome to your campus community.</h1>
+        <p>Lost something? Found something? Let’s help it find its way home.</p>
+        <div class="guest-welcome-actions">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Get started</a>
+            <a href="#how-it-works" class="guest-how-link">Explore how it works <span aria-hidden="true">↓</span></a>
         </div>
+        <a class="guest-create-account" href="{{ url_for('auth.register') }}">New to UEMFIND? Create an account</a>
+    </div>
+
+    <div class="welcome-illustration" role="img" aria-label="An object is reunited with its owner">
+        <div class="welcome-illustration-glow"></div>
+        <div class="welcome-path"></div>
+        <div class="welcome-object-card">
+            <span class="welcome-object-icon" aria-hidden="true">⌕</span>
+            <span><strong>Found</strong><small>Campus library</small></span>
+        </div>
+        <div class="welcome-map-pin" aria-hidden="true">
+            <svg viewBox="0 0 48 48" focusable="false">
+                <path d="M38 20c0 11-14 23-14 23S10 31 10 20a14 14 0 1 1 28 0Z"></path>
+                <circle cx="24" cy="20" r="5"></circle>
+            </svg>
+        </div>
+        <div class="welcome-return-card">
+            <span aria-hidden="true">✓</span>
+            <strong>Back where it belongs</strong>
+        </div>
+        <span class="welcome-leaf welcome-leaf-one" aria-hidden="true"></span>
+        <span class="welcome-leaf welcome-leaf-two" aria-hidden="true"></span>
     </div>
 </section>
 
-<section class="section" id="comment-ca-marche">
+<section class="guest-how-section" id="how-it-works">
     <div class="container">
-        <h2 class="section-title">Comment ça marche ?</h2>
-        <p class="section-subtitle">Retrouver un objet devient simple en trois étapes.</p>
-
-        <div class="steps">
-            <div class="card step-card">
-                <div class="step-number">1</div>
-                <h3>Déclarez</h3>
-                <p>Signalez un objet perdu ou trouvé sur le campus avec des détails précis.</p>
-            </div>
-
-            <div class="card step-card">
-                <div class="step-number">2</div>
-                <h3>Recherchez</h3>
-                <p>Consultez les objets déclarés et filtrez par catégorie, type ou lieu.</p>
-            </div>
-
-            <div class="card step-card">
-                <div class="step-number">3</div>
-                <h3>Restituez</h3>
-                <p>Lorsque la correspondance est trouvée, le propriétaire peut reprendre son objet.</p>
-            </div>
+        <span class="item-page-eyebrow">SIMPLE, SAFE, COMMUNITY-POWERED</span>
+        <h2 id="comment-ca-marche">How UEMFIND works</h2>
+        <div class="guest-how-steps">
+            <article><span>01</span><h3>Report</h3><p>Share a few helpful details about a lost or found item.</p></article>
+            <article><span>02</span><h3>Find a match</h3><p>Browse campus reports and identify a possible match.</p></article>
+            <article><span>03</span><h3>Return it</h3><p>Contact the student and confirm the item before it is returned.</p></article>
         </div>
     </div>
 </section>
+{% endif %}
+</div>
 
-<section class="section">
-    <div class="container">
-        <div class="cta">
-            <h2>Vous avez trouvé un objet ?</h2>
-            <p>Aidez un autre étudiant à retrouver ce qu’il a perdu.</p>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Rejoindre UEMFIND</a>
+{% if current_user.is_authenticated %}
+<section class="mobile-home-dashboard" aria-labelledby="mobile-home-title">
+    <header class="mobile-home-header">
+        <h1 id="mobile-home-title">Bonjour, {{ current_user.first_name }}.</h1>
+        <p>Recherchez parmi les dernières annonces du campus.</p>
+    </header>
+
+    <form class="mobile-home-search" method="GET" action="{{ url_for('items.list_items') }}"
+          data-submit-label="Recherche…">
+        <label class="visually-hidden" for="mobile-home-query">Rechercher une annonce</label>
+        <svg class="mobile-home-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+            <path d="m16 16 4.5 4.5"></path>
+        </svg>
+        <input id="mobile-home-query" type="search" name="q" placeholder="Ex. clés, sac, carte étudiante">
+        <button type="submit">Chercher</button>
+    </form>
+
+    <nav class="mobile-home-filters" aria-label="Filtrer les annonces">
+        <a href="{{ url_for('items.declare_lost') }}">
+            <span class="mobile-action-icon" aria-hidden="true">⌕</span>
+            <span><strong>J’ai perdu un objet</strong><small>Publier une déclaration</small></span>
+        </a>
+        <a href="{{ url_for('items.declare_found') }}">
+            <span class="mobile-action-icon" aria-hidden="true">✓</span>
+            <span><strong>J’ai trouvé un objet</strong><small>Aider son propriétaire</small></span>
+        </a>
+    </nav>
+
+    <a class="mobile-home-my-items" href="{{ url_for('items.my_items') }}">
+        <span>Mes déclarations</span>
+        <span aria-hidden="true">→</span>
+    </a>
+
+    <section class="mobile-home-section" aria-labelledby="mobile-recent-title">
+        <div class="mobile-home-section-heading">
+            <div>
+                <span class="item-page-eyebrow">NOUVEAU SUR LE CAMPUS</span>
+                <h2 id="mobile-recent-title">Annonces récentes</h2>
+            </div>
+            <a href="{{ url_for('items.list_items') }}">Tout voir</a>
         </div>
+
+        <div class="items-grid mobile-home-items-grid">
+            {% for item in recent_items %}
+                {% include "components/item_card.html" %}
+            {% else %}
+                <div class="mobile-home-empty">
+                    <strong>Aucune annonce pour le moment</strong>
+                    <span>Les nouvelles déclarations apparaîtront ici.</span>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if current_user.is_authenticated %}
+        <section class="mobile-home-chat" aria-labelledby="mobile-chat-title">
+            <div class="mobile-home-section-heading">
+                <div>
+                    <span class="item-page-eyebrow">RESTEZ EN CONTACT</span>
+                    <h2 id="mobile-chat-title">Chat</h2>
+                </div>
+                <a href="{{ url_for('home.community_chat') }}">Ouvrir</a>
+            </div>
+            <a class="mobile-chat-preview" href="{{ chat_preview_url }}">
+                <span class="mobile-chat-avatar" aria-hidden="true">
+                    <svg class="mobile-nav-icon" viewBox="0 0 24 24" focusable="false">
+                        <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z"></path>
+                    </svg>
+                </span>
+                <span class="mobile-chat-copy">
+                    <strong>{{ chat_preview_title }}</strong>
+                    <span>
+                        {% if chat_preview %}{{ chat_preview.body|truncate(76, True) }}
+                        {% else %}Ouvrez le chat pour échanger avec la communauté.{% endif %}
+                    </span>
+                </span>
+                <span class="mobile-recent-arrow" aria-hidden="true">→</span>
+            </a>
+        </section>
+    {% endif %}
+</section>
+{% else %}
+<section class="mobile-home-guest">
+    <span class="item-page-eyebrow">EUROMED LOST &amp; FOUND</span>
+    <h1>Welcome to your campus community.</h1>
+    <p>Lost something? Found something? Let’s help it find its way home.</p>
+    <div class="mobile-welcome-art" aria-hidden="true">
+        <span class="mobile-welcome-object">⌕</span>
+        <span class="mobile-welcome-route"></span>
+        <span class="mobile-welcome-pin">•</span>
+        <span class="mobile-welcome-check">✓</span>
     </div>
+    <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Get started</a>
+    <a class="mobile-welcome-how" href="#mobile-how-it-works">Explore how it works <span aria-hidden="true">↓</span></a>
+    <a class="guest-create-account" href="{{ url_for('auth.register') }}">New to UEMFIND? Create an account</a>
+</section>
+<section class="mobile-guest-how" id="mobile-how-it-works">
+    <h2>How UEMFIND works</h2>
+    <p><strong>Report.</strong> Share a few details about an object.</p>
+    <p><strong>Find a match.</strong> Browse reports from the campus community.</p>
+    <p><strong>Return it.</strong> Confirm ownership and coordinate a safe hand-off.</p>
 </section>
 {% endif %}
 

@@ -13,7 +13,8 @@
     </header>
 
     <div class="items-search-content">
-        <form method="GET" class="items-search-form">
+        {% include "components/flash_messages.html" %}
+        <form method="GET" class="items-search-form" data-submit-label="Recherche…">
             <label class="visually-hidden" for="item-search">Rechercher un objet par nom, catégorie, description ou lieu</label>
             <span class="search-icon" aria-hidden="true">⌕</span>
             <input id="item-search" type="search" name="q" value="{{ search_term }}"
@@ -64,33 +65,7 @@
         {% if items %}
             <div class="items-grid">
                 {% for item in items %}
-                    <article class="item-card">
-                        {% if item.photo %}
-                            <img src="{{ url_for('static', filename='uploads/' + item.photo) }}"
-                                 alt="{{ item.title }}" loading="lazy">
-                        {% else %}
-                            <div class="item-card-placeholder" aria-hidden="true">
-                                {% if item.item_type == "lost" %}⌕{% else %}✓{% endif %}
-                            </div>
-                        {% endif %}
-
-                        <div class="item-card-content">
-                            <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
-                                {% if item.item_type == 'lost' %}Objet perdu{% else %}Objet trouvé{% endif %}
-                            </span>
-
-                            <h3>{{ item.title }}</h3>
-                            <p class="item-card-description">{{ item.description }}</p>
-                            <div class="item-card-meta">
-                                <span>⌖ {{ item.location }}</span>
-                                <span>{{ item.event_date.strftime('%d/%m/%Y') }}</span>
-                            </div>
-
-                            <a href="{{ url_for('items.item_detail', item_id=item.id) }}" class="item-card-link">
-                                Voir les détails <span aria-hidden="true">→</span>
-                            </a>
-                        </div>
-                    </article>
+                    {% include "components/item_card.html" %}
                 {% endfor %}
             </div>
         {% else %}

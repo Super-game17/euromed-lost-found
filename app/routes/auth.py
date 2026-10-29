@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from urllib.parse import urlsplit
 
 from app import db
 from app.models import User
@@ -88,6 +89,17 @@ def login():
                 f"Bienvenue {user.first_name} !",
                 "success"
             )
+
+            next_url = request.form.get("next") or request.args.get("next", "")
+            parsed_next = urlsplit(next_url)
+            if (
+                parsed_next.scheme == ""
+                and parsed_next.netloc == ""
+                and parsed_next.path.startswith("/")
+                and not parsed_next.path.startswith("//")
+                and not parsed_next.path.startswith("/\\")
+            ):
+                return redirect(next_url)
 
             return redirect(url_for("home.index"))
 

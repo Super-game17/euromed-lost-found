@@ -66,3 +66,68 @@
     </div>
 
 </nav>
+
+{% if current_user.is_authenticated %}
+<nav class="mobile-bottom-nav" aria-label="Navigation mobile principale">
+    <a class="mobile-nav-link{% if request.endpoint in ('items.list_items', 'items.item_detail') %} is-active{% endif %}"
+       href="{{ url_for('items.list_items') }}"
+       {% if request.endpoint in ('items.list_items', 'items.item_detail') %}aria-current="page"{% endif %}>
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+            <path d="m16 16 4.5 4.5"></path>
+        </svg>
+        <span>Rechercher</span>
+    </a>
+
+    <a class="mobile-nav-link{% if request.endpoint == 'home.community_chat' %} is-active{% endif %}"
+       href="{{ url_for('home.community_chat') if current_user.is_authenticated else url_for('auth.login') }}"
+       {% if request.endpoint == 'home.community_chat' %}aria-current="page"{% endif %}>
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z"></path>
+            <path d="M8 11h8M8 14h5"></path>
+        </svg>
+        <span>Chat</span>
+    </a>
+
+    <a class="mobile-nav-link mobile-nav-home{% if request.endpoint == 'home.index' %} is-active{% endif %}"
+       href="{{ url_for('home.index') }}"
+       {% if request.endpoint == 'home.index' %}aria-current="page"{% endif %}>
+        <span class="mobile-home-icon">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m3 10 9-7 9 7"></path>
+                <path d="M5.5 9v11h13V9M9.5 20v-6h5v6"></path>
+            </svg>
+        </span>
+        <span>Accueil</span>
+    </a>
+
+    <details class="mobile-nav-report{% if request.endpoint in ('items.declare_lost', 'items.declare_found') %} is-active{% endif %}">
+        <summary class="mobile-nav-link">
+            <svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span>Déclarer</span>
+        </summary>
+        <div class="mobile-report-menu" aria-label="Choisir une déclaration">
+            <a href="{{ url_for('items.declare_lost') }}"
+               {% if request.endpoint == 'items.declare_lost' %}aria-current="page"{% endif %}>
+                Objet perdu
+            </a>
+            <a href="{{ url_for('items.declare_found') }}"
+               {% if request.endpoint == 'items.declare_found' %}aria-current="page"{% endif %}>
+                Objet trouvé
+            </a>
+        </div>
+    </details>
+
+    <a class="mobile-nav-link{% if request.endpoint in ('auth.profile', 'items.my_items', 'matching.my_claims', 'matching.manage_claim') %} is-active{% endif %}"
+       href="{{ url_for('auth.profile') if current_user.is_authenticated else url_for('auth.login') }}"
+       {% if request.endpoint in ('auth.profile', 'items.my_items', 'matching.my_claims', 'matching.manage_claim') %}aria-current="page"{% endif %}>
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20a7 7 0 0 1 14 0"></path>
+        </svg>
+        <span>Profil</span>
+    </a>
+</nav>
+{% endif %}

@@ -1,34 +1,48 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Correspondances</title>
-  </head>
-  <body>
-    <h1>Correspondances possibles pour : {{ item.title }}</h1>
+{% extends "base.html" %}
 
-    <p><strong>Type :</strong> {{ item.item_type }}</p>
-    <p><strong>Catégorie :</strong> {{ item.category }}</p>
-    <p><strong>Lieu :</strong> {{ item.location }}</p>
-    <p><strong>Date :</strong> {{ item.event_date }}</p>
+{% block title %}Correspondances possibles | UEMFIND{% endblock %}
 
-    <h2>Objets suggérés</h2>
+{% block content %}
+<section class="matching-page">
+    {% set back_url = url_for('items.item_detail', item_id=item.id) %}
+    {% include "components/back_link.html" %}
+    <span class="item-page-eyebrow">CORRESPONDANCES POSSIBLES</span>
+    <h1>Suggestions pour « {{ item.title }} »</h1>
+    <p class="matching-intro">Les résultats sont des suggestions basées sur des détails communs, pas une confirmation de propriété. Vérifiez chaque réclamation avant toute restitution.</p>
+    <div class="matching-item-summary">
+        <p><strong>Type :</strong> {{ 'Perdu' if item.item_type == 'lost' else 'Trouvé' }}</p>
+        <p><strong>Catégorie :</strong> {{ item.category }}</p>
+        <p><strong>Lieu :</strong> {{ item.location }}</p>
+        <p><strong>Date :</strong> {{ item.event_date.strftime('%d/%m/%Y') }}</p>
+    </div>
 
+    <h2 class="matching-section-title">Objets suggérés</h2>
     {% if matches %}
-      {% for match in matches %}
-        <div style="border: 1px solid #ddd; padding: 16px; margin-bottom: 12px;">
-          <h3>{{ match.item.title }}</h3>
-          <p><strong>Catégorie :</strong> {{ match.item.category }}</p>
-          <p><strong>Lieu :</strong> {{ match.item.location }}</p>
-          <p><strong>Date :</strong> {{ match.item.event_date }}</p>
-          <p><strong>Score :</strong> {{ match.score }} / 100</p>
-          <a href="{{ url_for('matching.claim_item', item_id=match.item.id) }}">Réclamer cet objet</a>
+        <div class="matching-results">
+            {% for match in matches %}
+                <article class="matching-result">
+                    <span class="badge {{ 'badge-green' if match.item.item_type == 'found' else 'badge-blue' }}">
+                        {{ 'Objet trouvé' if match.item.item_type == 'found' else 'Objet perdu' }}
+                    </span>
+                    <h3>{{ match.item.title }}</h3>
+                    <p><strong>Catégorie :</strong> {{ match.item.category }}</p>
+                    <p><strong>Lieu :</strong> {{ match.item.location }}</p>
+                    <p><strong>Date :</strong> {{ match.item.event_date.strftime('%d/%m/%Y') }}</p>
+                    <p class="matching-score">Similarité indicative : {{ match.score }} / 100</p>
+                    <a class="btn btn-outline" href="{{ url_for('items.item_detail', item_id=match.item.id) }}">Voir l’annonce</a>
+                    {% if match.item.item_type == 'found' and match.item.user_id != current_user.id %}
+                        <a class="btn btn-primary" href="{{ url_for('matching.claim_item', item_id=match.item.id) }}">Réclamer cet objet</a>
+                    {% endif %}
+                </article>
+            {% endfor %}
         </div>
-      {% endfor %}
     {% else %}
-      <p>Aucune correspondance n’a été détectée avec un score suffisant pour le moment.</p>
+        <div class="matching-empty">
+            <h3>Aucune correspondance pour le moment</h3>
+            <p>Les suggestions peuvent évoluer à mesure que de nouvelles annonces sont publiées.</p>
+        </div>
     {% endif %}
 
-    <p><a href="{{ url_for('matching.my_claims') }}">Voir mes réclamations</a></p>
-  </body>
-</html>
+    <a href="{{ url_for('matching.my_claims') }}" class="btn btn-outline matching-claims-link">Voir mes réclamations</a>
+</section>
+{% endblock %}

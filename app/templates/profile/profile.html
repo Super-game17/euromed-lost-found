@@ -3,27 +3,58 @@
 {% block title %}Mon profil | UEMFIND{% endblock %}
 
 {% block content %}
-<section class="account-page">
-    <div class="account-heading">
-        <span class="hero-badge">ESPACE PERSONNEL</span>
+<section class="account-page profile-page">
+    <header class="account-heading profile-hero">
+        <span class="profile-eyebrow">UEMFIND · ESPACE ÉTUDIANT</span>
         <h1>Mon profil</h1>
-        <p>Vos informations de compte UEMFIND.</p>
-    </div>
+        <p>Vos informations et raccourcis personnels.</p>
+        <span class="profile-hero-mark" aria-hidden="true">UEMF</span>
+    </header>
 
-    <div class="account-card">
-        <div class="account-avatar" aria-hidden="true">
+    <section class="account-card profile-identity-card" aria-label="Informations du compte">
+        <div class="account-avatar profile-avatar" aria-hidden="true">
             {{ user.first_name[:1] }}{{ user.last_name[:1] }}
         </div>
-        <div class="account-details">
+        <div class="account-details profile-identity">
+            <span class="profile-member-label">Communauté UEMF</span>
             <h2>{{ user.first_name }} {{ user.last_name }}</h2>
             <p>{{ user.email }}</p>
-            <span>Membre depuis le {{ user.created_at.strftime('%d/%m/%Y') }}</span>
+            <span class="profile-member-date">Membre depuis le {{ user.created_at.strftime('%d/%m/%Y') }}</span>
         </div>
+    </section>
+
+    <div class="profile-links-heading">
+        <h2>Mon espace</h2>
+        <span>Accès rapide</span>
     </div>
 
-    <div class="account-actions">
-        <a href="{{ url_for('items.my_items') }}" class="btn btn-primary">Mes déclarations</a>
-        <a href="{{ url_for('home.index') }}" class="btn btn-outline">Retour à mon espace</a>
+    <nav class="profile-links" aria-label="Raccourcis du compte">
+        <a class="profile-link-card" href="{{ url_for('items.my_items') }}">
+            <span class="profile-link-icon profile-link-icon-blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M7 3h8l4 4v14H7z"></path><path d="M15 3v5h5M10 13h6M10 17h6"></path></svg>
+            </span>
+            <span class="profile-link-copy"><strong>Mes déclarations</strong><small>Suivre les objets que vous avez signalés</small></span>
+            <span class="profile-link-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="profile-link-card" href="{{ url_for('matching.my_claims') }}">
+            <span class="profile-link-icon profile-link-icon-green" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 20 7v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"></path><path d="m8.5 12 2.2 2.2 4.8-4.8"></path></svg>
+            </span>
+            <span class="profile-link-copy"><strong>Mes réclamations</strong><small>Consulter le suivi des restitutions</small></span>
+            <span class="profile-link-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="profile-link-card" href="{{ url_for('home.community_chat') }}">
+            <span class="profile-link-icon profile-link-icon-blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5a7.5 7.5 0 1 1 17-3Z"></path><path d="M8 11h8M8 14h5"></path></svg>
+            </span>
+            <span class="profile-link-copy"><strong>Mes conversations</strong><small>Échanger avec la communauté</small></span>
+            <span class="profile-link-arrow" aria-hidden="true">→</span>
+        </a>
+    </nav>
+
+    <div class="profile-actions">
+        <a class="profile-home-link" href="{{ url_for('home.index') }}">Retour à l’accueil</a>
+        <a href="{{ url_for('auth.logout') }}" class="profile-logout-link">Déconnexion</a>
     </div>
 </section>
 {% endblock %}

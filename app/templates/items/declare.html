@@ -5,6 +5,8 @@
 {% block content %}
 {% set form_data = form|default({}) %}
 <section class="item-declare-page">
+    {% set back_url = url_for('home.index') %}
+    {% include "components/back_link.html" %}
     <div class="item-declare-banner item-declare-banner-{{ item_type }}">
         <span class="item-page-eyebrow">UEMFIND · COMMUNAUTÉ UEMF</span>
         <h1>{{ titre_page }}</h1>
@@ -55,9 +57,31 @@
                 {% endif %}
             {% endwith %}
 
-            <form method="POST" enctype="multipart/form-data" class="item-form" data-submit-label="Enregistrement…">
+            <form method="POST" enctype="multipart/form-data" class="item-form"
+                  data-submit-label="Enregistrement…" data-confirm-unsaved data-async-upload>
 
                 <div class="item-form-grid">
+                    <div class="item-form-field item-form-field-full item-photo-field">
+                        <span class="item-form-label">Photo (facultative)</span>
+                        <div class="photo-actions">
+                            <button type="button" class="btn btn-outline" data-open-camera>Prendre une photo</button>
+                            <button type="button" class="btn btn-outline" data-open-gallery>Choisir dans la galerie</button>
+                        </div>
+                        <input class="visually-hidden" type="file" id="photo-camera" name="photo_camera"
+                               accept="image/*" capture="environment" data-photo-input>
+                        <input class="visually-hidden" type="file" id="photo-gallery" name="photo_gallery"
+                               accept="image/png,image/jpeg,image/webp" data-photo-input>
+                        <small>PNG, JPG ou WebP, 4 Mo maximum. Évitez d’inclure des informations sensibles.</small>
+                        <div class="photo-preview-wrap" data-photo-wrap hidden>
+                            <img class="item-photo-preview" data-photo-preview alt="Aperçu de la photo sélectionnée">
+                            <button type="button" class="photo-remove" data-remove-photo aria-label="Retirer la photo sélectionnée">
+                                Retirer la photo
+                            </button>
+                        </div>
+                        <progress class="photo-upload-progress" data-upload-progress max="100" value="0" hidden></progress>
+                        <p class="photo-upload-status" data-upload-status role="status" aria-live="polite" hidden></p>
+                    </div>
+
                     <div class="item-form-field">
                         <label for="title">Nom de l’objet <span>*</span></label>
                         <input type="text" id="title" name="title" maxlength="120" required
@@ -68,14 +92,14 @@
                     <div class="item-form-field">
                         <label for="category-select">Catégorie <span>*</span></label>
                         <select id="category-select" name="category_select" required>
-                            <option value="" selected disabled>Choisissez une catégorie</option>
-                            <option value="Carte étudiante">Carte étudiante</option>
-                            <option value="Électronique">Électronique</option>
-                            <option value="Académique">Académique</option>
-                            <option value="Clés">Clés</option>
-                            <option value="Vêtements">Vêtements</option>
-                            <option value="Sac">Sac</option>
-                            <option value="Autre">Autre</option>
+                            <option value="" {% if not form_data.get('category') %}selected{% endif %} disabled>Choisissez une catégorie</option>
+                            <option value="Carte étudiante" {% if form_data.get('category') == 'Carte étudiante' %}selected{% endif %}>Carte étudiante</option>
+                            <option value="Électronique" {% if form_data.get('category') == 'Électronique' %}selected{% endif %}>Électronique</option>
+                            <option value="Académique" {% if form_data.get('category') == 'Académique' %}selected{% endif %}>Académique</option>
+                            <option value="Clés" {% if form_data.get('category') == 'Clés' %}selected{% endif %}>Clés</option>
+                            <option value="Vêtements" {% if form_data.get('category') == 'Vêtements' %}selected{% endif %}>Vêtements</option>
+                            <option value="Sac" {% if form_data.get('category') == 'Sac' %}selected{% endif %}>Sac</option>
+                            <option value="Autre" {% if form_data.get('category_select') == 'Autre' or form_data.get('category_custom') %}selected{% endif %}>Autre</option>
                         </select>
                         <input type="text" id="category-custom" name="category_custom" maxlength="100"
                                value="{{ form_data.get('category_custom', '') }}"
@@ -104,22 +128,22 @@
                             <span>*</span>
                         </label>
                         <select id="location-select" name="location_select" required>
-                            <option value="" selected disabled>Choisissez un lieu</option>
-                            <option value="Bibliothèque">Bibliothèque</option>
-                            <option value="Complexe sportif">Complexe sportif</option>
-                            <option value="Restaurant">Restaurant</option>
-                            <option value="Cafétéria">Cafétéria</option>
-                            <option value="Entre bâtiments">Entre bâtiments</option>
-                            <option value="Agora">Agora</option>
-                            <option value="UVillage">UVillage</option>
-                            <option value="Bâtiment">Bâtiment</option>
-                            <option value="Administration">Administration</option>
+                            <option value="" {% if not form_data.get('location_select') %}selected{% endif %} disabled>Choisissez un lieu</option>
+                            <option value="Bibliothèque" {% if form_data.get('location_select') == 'Bibliothèque' %}selected{% endif %}>Bibliothèque</option>
+                            <option value="Complexe sportif" {% if form_data.get('location_select') == 'Complexe sportif' %}selected{% endif %}>Complexe sportif</option>
+                            <option value="Restaurant" {% if form_data.get('location_select') == 'Restaurant' %}selected{% endif %}>Restaurant</option>
+                            <option value="Cafétéria" {% if form_data.get('location_select') == 'Cafétéria' %}selected{% endif %}>Cafétéria</option>
+                            <option value="Entre bâtiments" {% if form_data.get('location_select') == 'Entre bâtiments' %}selected{% endif %}>Entre bâtiments</option>
+                            <option value="Agora" {% if form_data.get('location_select') == 'Agora' %}selected{% endif %}>Agora</option>
+                            <option value="UVillage" {% if form_data.get('location_select') == 'UVillage' %}selected{% endif %}>UVillage</option>
+                            <option value="Bâtiment" {% if form_data.get('location_select') == 'Bâtiment' %}selected{% endif %}>Bâtiment</option>
+                            <option value="Administration" {% if form_data.get('location_select') == 'Administration' %}selected{% endif %}>Administration</option>
                             {% if item_type == "found" %}
-                                <option value="Sécurité">Sécurité (lieu de dépôt)</option>
+                                <option value="Sécurité" {% if form_data.get('location_select') == 'Sécurité' %}selected{% endif %}>Sécurité (lieu de dépôt)</option>
                             {% endif %}
-                            <option value="Autre">Autre</option>
+                            <option value="Autre" {% if form_data.get('location_select') == 'Autre' %}selected{% endif %}>Autre</option>
                         </select>
-                        <select id="location-subgroup" class="location-subgroup" aria-label="Sous-lieu">
+                        <select id="location-subgroup" name="location_subgroup" class="location-subgroup" aria-label="Sous-lieu">
                             <option value="">Choisissez un sous-lieu</option>
                         </select>
                         <input type="text" id="location-custom" name="location_custom" maxlength="120"
@@ -142,12 +166,6 @@
                                   placeholder="Par exemple : ‘Je peux confirmer l’objet si vous me contactez, je l’ai gardé chez moi’ ...">{{ form_data.get('finder_note', '') }}</textarea>
                     </div>
 
-                    <div class="item-form-field item-form-field-full">
-                        <label for="photo">Photo (facultative)</label>
-                        <input type="file" id="photo" name="photo" accept="image/png,image/jpeg,image/webp">
-                        <small>PNG, JPG ou WebP. Une photo aide à reconnaître l’objet ; évitez d’y montrer des informations sensibles.</small>
-                        <img class="item-photo-preview" data-photo-preview alt="Aperçu de la photo sélectionnée" hidden>
-                    </div>
                 </div>
 
                 <div class="item-form-actions">
@@ -226,6 +244,7 @@
     locationCustom.addEventListener('input', syncLocationValue);
 
     populateLocationSubgroup(locationSelect.value);
+    locationSubgroup.value = {{ form_data.get('location_subgroup', '')|tojson }};
     syncCategoryValue();
     syncLocationValue();
 

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: euromed-lost-found
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.4
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: euromed-lost-found-db
+          property: connectionString
+
+databases:
+  - name: euromed-lost-found-db
+    plan: free
+    databaseName: euromed_lost_found
+    user: euromed_lost_found_user
+    postgresMajorVersion: "16"

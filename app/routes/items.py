@@ -18,6 +18,7 @@ items_bp = Blueprint(
 )
 
 ALLOWED_ITEM_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+MAX_ITEM_IMAGE_BYTES = 4 * 1024 * 1024
 
 
 def _is_supported_image(photo, extension):
@@ -77,7 +78,18 @@ def create_item(item_type):
     finder_phone = request.form.get("finder_phone", "").strip()
     finder_note = request.form.get("finder_note", "").strip()
     event_date = request.form.get("event_date", "").strip()
-    photo = request.files.get("photo")
+    photo = next(
+        (
+            uploaded_file
+            for uploaded_file in (
+                request.files.get("photo_camera"),
+                request.files.get("photo_gallery"),
+                request.files.get("photo"),
+            )
+            if uploaded_file and uploaded_file.filename
+        ),
+        None,
+    )
     photo_filename = secure_filename(photo.filename) if photo and photo.filename else ""
     photo_extension = photo_filename.rpartition(".")[2].lower()
 
@@ -96,6 +108,24 @@ def create_item(item_type):
             "danger"
         )
         return _render_declaration(item_type, request.form)
+
+    if photo and photo.content_length and photo.content_length > MAX_ITEM_IMAGE_BYTES:
+        flash(
+            "La photo ne peut pas dépasser 4 Mo.",
+            "danger"
+        )
+        return _render_declaration(item_type, request.form)
+
+    if photo:
+        photo.stream.seek(0, 2)
+        photo_size = photo.stream.tell()
+        photo.stream.seek(0)
+        if photo_size > MAX_ITEM_IMAGE_BYTES:
+            flash(
+                "La photo ne peut pas dépasser 4 Mo.",
+                "danger"
+            )
+            return _render_declaration(item_type, request.form)
 
     if photo_filename and not _is_supported_image(photo, photo_extension):
         flash(
@@ -159,6 +189,7 @@ def create_item(item_type):
 
 
 @items_bp.route("/<int:item_id>")
+@login_required
 def item_detail(item_id):
 
     item = Item.query.get_or_404(item_id)
@@ -171,6 +202,7 @@ def item_detail(item_id):
 
 
 @items_bp.route("/")
+@login_required
 def list_items():
 
     item_type = request.args.get("type", "").strip()

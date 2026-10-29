@@ -4,6 +4,18 @@
 
 {% block content %}
 <section class="detail-page">
+    {% set back_url = url_for('items.list_items') %}
+    {% include "components/back_link.html" %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="auth-alerts" role="status" aria-live="polite">
+                {% for category, message in messages %}
+                    <p class="auth-alert auth-alert-{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <span class="badge {{ 'badge-blue' if item.item_type == 'lost' else 'badge-green' }}">
         {% if item.item_type == 'lost' %}Objet perdu{% else %}Objet trouvé{% endif %}
@@ -14,6 +26,10 @@
     {% if item.photo %}
         <img src="{{ url_for('static', filename='uploads/' + item.photo) }}"
              alt="{{ item.title }}" class="detail-photo">
+    {% else %}
+        <div class="detail-photo-placeholder" role="img" aria-label="Aucune photo pour {{ item.title }}">
+            <span aria-hidden="true">⌕</span>
+        </div>
     {% endif %}
 
     <ul class="detail-info">
@@ -33,7 +49,11 @@
     <div class="detail-meta-card">
         <h3>Profil du déclarant</h3>
         <p><strong>Nom :</strong> {{ item.user.first_name }} {{ item.user.last_name }}</p>
-        <p><strong>Email :</strong> {{ item.user.email }}</p>
+        {% if not is_owner %}
+            <a class="btn btn-outline" href="{{ url_for('home.community_chat', user_id=item.user.id) }}">
+                Contacter via le chat
+            </a>
+        {% endif %}
         {% if item.finder_phone %}
             <p><strong>Téléphone :</strong> {{ item.finder_phone }}</p>
         {% endif %}
@@ -44,6 +64,11 @@
 
     <div class="actions">
         {% if is_owner %}
+            {% if item.status == 'actif' %}
+                <a href="{{ url_for('matching.matches_for_item', item_id=item.id) }}" class="btn btn-primary">
+                    Voir les correspondances possibles
+                </a>
+            {% endif %}
             <form method="POST" action="{{ url_for('items.delete_item', item_id=item.id) }}"
                   style="display:inline;"
                   onsubmit="return confirm('Supprimer cette déclaration ?');">
